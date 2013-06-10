@@ -169,6 +169,7 @@ int main(int argc, char *argv[]) {
 				puts(logBuffer);
 #endif
 				pthread_create(&(t_id[i]), NULL, thread_sampling, NULL);
+
 			}
 
 			else
