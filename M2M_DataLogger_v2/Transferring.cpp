@@ -167,14 +167,6 @@ void makeHeaderInfo(header_info *headerData)
 #endif
 }
 
-void makeTimeStamp(){
-	strcpy(t_timeStamp[1], getTimeInString(TIME_MODE_YMDHMS));
-	#ifdef DEBUG_LEVEL_2
-				sprintf(logBuffer, "%s: Transferring Thread Time Stamp: %s\n	", getTimeInString(TIME_MODE_YMDHMS), t_timeStamp[1]);
-				writeDebugLog(logBuffer);
-				puts(logBuffer);
-	#endif
-}
 
 void *thread_transferring(void * arg)
 {
@@ -202,18 +194,18 @@ void *thread_transferring(void * arg)
 
 		if(delay == RECONN_1ST_PRD || delay == RECONN_2ND_PRD) {
 			// Try Reconnection
-	#ifdef DEBUG_LEVEL_3
+#ifdef DEBUG_LEVEL_3
 			sprintf(debugLog, "%s: Transferring Thread-Try Reconnection State\n", getTimeInString(TIME_MODE_YMDHMS));
 			writeDebugLog(debugLog);
 			puts(debugLog);
-	#endif
+#endif
 			ret = connectPPP(DEFAULT_CONN_WAIT_TIME);
 			if(ret == ERR_CONNECT_PPP) {
 				if(delay == RECONN_2ND_PRD)
 					delay = RECONN_1ST_PRD;
 				else {
 					delay++;
-					makeTimeStamp();
+					makeTimeStamp(1);
 					continue;
 				}
 			}
@@ -237,7 +229,7 @@ void *thread_transferring(void * arg)
 				ret = connectPPP(DEFAULT_CONN_WAIT_TIME);
 				if(ret == ERR_CONNECT_PPP) {
 					delay++;
-					makeTimeStamp();
+					makeTimeStamp(1);
 					continue;
 				}
 			}
@@ -257,8 +249,8 @@ void *thread_transferring(void * arg)
 				if(ret != TCP_CONNECTION_DONE) {
 					delay++;
 					ret = sms_msg_send(admin_phone_num, modem_ID,
-								"Socket Error - Check Server' state");
-					makeTimeStamp();
+							"Socket Error - Check Server' state");
+					makeTimeStamp(1);
 					continue;
 				}
 			}
@@ -276,7 +268,7 @@ void *thread_transferring(void * arg)
 		if(delay > 0)
 			delay++;
 
-		makeTimeStamp();
+		makeTimeStamp(1);
 	}
 
 #ifdef DEBUG_LEVEL_1

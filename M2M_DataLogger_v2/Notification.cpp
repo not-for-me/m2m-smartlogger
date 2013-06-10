@@ -152,6 +152,21 @@ int checkEventFlag(int eventNo)
 	return eventNo;
 }
 
+void makeTimeStamp(int i){
+	char logBuffer[LOG_SIZE] = "";
+
+	strcpy(t_timeStamp[i], getTimeInString(TIME_MODE_YMDHMS));
+#ifdef DEBUG_LEVEL_2
+	if(i == 0)
+		sprintf(logBuffer, "%s: Sampling Thread Time Stamp: %s\n	", getTimeInString(TIME_MODE_YMDHMS),t_timeStamp[0]);
+	else if(i == 1)
+		sprintf(logBuffer, "%s: Transferring Thread Time Stamp: %s\n	", getTimeInString(TIME_MODE_YMDHMS), t_timeStamp[1]);
+	else if(i == 2)
+		sprintf(logBuffer, "%s: Notification Thread Time Stamp: %s\n	", getTimeInString(TIME_MODE_YMDHMS), t_timeStamp[2]);
+	writeDebugLog(logBuffer);
+	puts(logBuffer);
+#endif
+}
 
 void *thread_notification(void * arg)
 {
@@ -265,13 +280,7 @@ void *thread_notification(void * arg)
 #endif
 		}
 
-
-		strcpy(t_timeStamp[2], getTimeInString(TIME_MODE_YMDHMS));
-#ifdef DEBUG_LEVEL_2
-			sprintf(logBuffer, "%s: Notification Thread Time Stamp: %s\n	", getTimeInString(TIME_MODE_YMDHMS), t_timeStamp[2]);
-			writeDebugLog(logBuffer);
-			puts(logBuffer);
-#endif
+		 makeTimeStamp(2);
 	}
 
 #ifdef DEBUG_LEVEL_1

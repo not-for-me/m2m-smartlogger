@@ -375,6 +375,7 @@ int checkDataRange(lake_data *data)
 	return DATA_RANGE_CHK_DONE;
 }
 
+
 int samplingData(lake_data *data, char *timeStamp)
 {
 	int ret = 0;
@@ -456,13 +457,13 @@ int samplingData(lake_data *data, char *timeStamp)
 #endif
 			checkEventFlag(ret);
 
-			if(ret != ERR_COL_5TH_STAR_P) {		//For Testing
-				parsingRawData(buf, data);
-				sprintf(buf, "%s,%s,%.2f,%.2f,%.2f,%.3f,%.2f,%.2f,%.1f,%.1f\n", data->currentDate, timeStamp, data->temp,
-						data->spCond, data->sal, data->depth10, data->chl, data->ldo, data->ivolt, data->ovolt);
-				writeDataLog(buf);
-				continue;
-			}		//For Testing
+			//if(ret != ERR_COL_5TH_STAR_P) {		//For Testing
+			parsingRawData(buf, data);
+			sprintf(buf, "%s,%s,%.2f,%.2f,%.2f,%.3f,%.2f,%.2f,%.1f,%.1f\n", data->currentDate, timeStamp, data->temp,
+					data->spCond, data->sal, data->depth10, data->chl, data->ldo, data->ivolt, data->ovolt);
+			writeDataLog(buf);
+			continue;
+			//}		//For Testing
 		}
 
 		ret = checkDataRange(data);
@@ -578,12 +579,7 @@ void *thread_sampling(void * arg)
 #endif
 		}
 
-		strcpy(t_timeStamp[0], getTimeInString(TIME_MODE_YMDHMS));
-#ifdef DEBUG_LEVEL_2
-		sprintf(logBuffer, "%s: Sampling Thread Time Stamp: %s\n	", getTimeInString(TIME_MODE_YMDHMS),t_timeStamp[0]);
-		writeDebugLog(logBuffer);
-		puts(logBuffer);
-#endif
+		 makeTimeStamp(0);
 	}
 
 
