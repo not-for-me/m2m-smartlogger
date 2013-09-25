@@ -1,5 +1,9 @@
 #include "./Header/Queue.h"
 
+/*
+There is no dependency in this file.
+*/
+
 int initSamplingQueue(queue_info *qinfo)
 {
 	int i = 0;
