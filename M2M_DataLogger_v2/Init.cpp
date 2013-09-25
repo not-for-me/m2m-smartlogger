@@ -116,7 +116,7 @@ int setConfiguration()
 	if ( (ret = getConfValue("admin_phone_num", admin_phone_num)) != GET_CONFIG_DONE )
 		return checkEventFlag(ret);
 
-// SKT API Dependency Secntion ---------------- Start
+// SKT API Dependency Section ---------------- Start
 #ifdef DEBUG_LEVEL_3
 	printf("%s: Modem ID Configuration\n", getTimeInString(TIME_MODE_YMDHMS));
 #endif
@@ -132,7 +132,7 @@ int setConfiguration()
 	}
 	else
 		return checkEventFlag(ERR_MODEM_NUM_GET);
-// SKT API Dependency Secntion ---------------- End
+// SKT API Dependency Section ---------------- End
 
 #ifdef DEBUG_LEVEL_3
 	printf("%s: Sensor ID Configuration\n", getTimeInString(TIME_MODE_YMDHMS));
@@ -196,7 +196,7 @@ int connectPPP(int defaultTime)
 	printf("%s: Default Waiting Time is %dsec\n", getTimeInString(TIME_MODE_YMDHMS), defaultTime);
 #endif
 
-// SKT API Dependency Secntion ---------------- Start
+// SKT API Dependency Section ---------------- Start
 	if( mnet_pppopen(defaultTime) < 1 ){	// SKT API
 #ifdef DEBUG_LEVEL_3
 		printf("%s: Connecting to the PPP... [Fail]: First Try\n", getTimeInString(TIME_MODE_YMDHMS));
@@ -209,7 +209,7 @@ int connectPPP(int defaultTime)
 			return checkEventFlag(ERR_CONNECT_PPP);
 		}
 	}
-// SKT API Dependency Secntion ---------------- End
+// SKT API Dependency Section ---------------- End
 
 
 #ifdef DEBUG_LEVEL_1
@@ -224,6 +224,7 @@ int connectPPP(int defaultTime)
 	return PPP_CONNECTION_DONE;
 }
 
+// Sensor Dependency Section ---------------- Start
 int checkSensor()
 {
 	int fd = 0;
@@ -271,6 +272,7 @@ int checkSensor()
 
 	return checkEventFlag(ERR_SENSOR_INIT);
 }
+// Sensor Dependency Section ---------------- End
 
 int registerModem()
 {
@@ -295,13 +297,15 @@ int registerModem()
 	puts(logBuffer);
 #endif
 
-	ret = gps_on();
+// SKT API Dependency Section ---------------- Start
+	ret = gps_on();		// SKT API
 	if (ret < 0)
 		return checkEventFlag(ERR_GPS_ON);
 
-	ret = gps_optmod(3);
+	ret = gps_optmod(3);		//SKT API
 	if (ret < 0)
 		return checkEventFlag(ERR_GPS_OPTION);
+// SKT API Dependency Section ---------------- End
 
 	ret = tcpConnection(&sock);
 #ifdef DEBUG_LEVEL_3
@@ -337,17 +341,18 @@ int registerModem()
 	printf("%s: Register Modem Configuration to Server\n", getTimeInString(TIME_MODE_YMDHMS));
 #endif
 
+// SKT API Dependency Section ---------------- Start
 #ifdef DEBUG_LEVEL_3
 	printf("%s: Waiting GPS Information Setup\n", getTimeInString(TIME_MODE_YMDHMS));
 #endif
 	sleep(60);
-	ret = gps_get_current_position(&gpslog);
+	ret = gps_get_current_position(&gpslog);		// SKT API
 	if (ret < 0) {
 #ifdef DEBUG_LEVEL_3
 	printf("%s: GPS Information First Fail\n", getTimeInString(TIME_MODE_YMDHMS));
 #endif
 		sleep(60);
-		ret = gps_get_current_position(&gpslog);
+		ret = gps_get_current_position(&gpslog);	// SKT API
 		if (ret < 0) {
 #ifdef DEBUG_LEVEL_3
 	printf("%s: GPS Information Second Fail\n", getTimeInString(TIME_MODE_YMDHMS));
@@ -357,14 +362,16 @@ int registerModem()
 			gpslog.lon = 0.0;
 		}
 	}
-	gps_off();
-	sprintf(msg, "%s,%s,%.6f,%.6f", admin_phone_num, modem_addr,gpslog.lat, gpslog.lon);
+	gps_off();										// SKT API
+// SKT API Dependency Section ---------------- End
+
+	sprintf(msg, "%s,%s,%.6f,%.6f", admin_phone_num, modem_addr, gpslog.lat, gpslog.lon);
 	//Make header Information
 #ifdef DEBUG_LEVEL_3
 	printf("%s: makeMessage Start\n", getTimeInString(TIME_MODE_YMDHMS));
 #endif
 	headerData.msgType = MSG_TYPE_REGISTER;
-	headerData.data_len = getTotalDataLength(msg);
+	headerData.data_len = s(msg);		// s function ?
 	headerData.msg_num = 1;
 	headerData.msg_len = getMSGLength(msg);
 	makeHeaderInfo(&headerData);
@@ -414,6 +421,7 @@ int initialize()
 	puts(logBuffer);
 #endif
 
+// SKT API Dependency Section ---------------- Start
 	ret = setConfiguration();
 #ifdef DEBUG_LEVEL_3
 	printf("%s: [setConfiguration] Return Value %d\n", getTimeInString(TIME_MODE_YMDHMS), ret);
@@ -427,20 +435,25 @@ int initialize()
 #endif
 	if( ret != PPP_CONNECTION_DONE )
 		return checkEventFlag(ERR_INITIALIZE);
+// SKT API Dependency Section ---------------- End
 
+// Sensor Dependency Section ---------------- Start
 	ret = checkSensor();
 #ifdef DEBUG_LEVEL_3
 	printf("%s: [checkSensor] Return Value %d\n", getTimeInString(TIME_MODE_YMDHMS), ret);
 #endif
 	if( ret != SENSOR_INIT_DONE)
 		return checkEventFlag(ERR_INITIALIZE);
+// Sensor Dependency Section ---------------- End
 
+// SKT API Dependency Section ---------------- Start
 	ret = registerModem();
 #ifdef DEBUG_LEVEL_3
 	printf("%s: [registerModem] Return Value %d\n", getTimeInString(TIME_MODE_YMDHMS), ret);
 #endif
 	if( ret != REGISTER_MODEM_DONE )
 		return checkEventFlag(ERR_INITIALIZE);
+// SKT API Dependency Section ---------------- End
 
 #ifdef DEBUG_LEVEL_1
 	sprintf(logBuffer, "%s: [Initialize] Stop\n", getTimeInString(TIME_MODE_YMDHMS));
