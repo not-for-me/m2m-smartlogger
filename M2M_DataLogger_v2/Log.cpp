@@ -1,4 +1,7 @@
 #include "./Header/Log.h"
+/*
+There is no dependency
+*/
 
 void writeDebugLog(char* str)
 {
