@@ -116,10 +116,11 @@ int setConfiguration()
 	if ( (ret = getConfValue("admin_phone_num", admin_phone_num)) != GET_CONFIG_DONE )
 		return checkEventFlag(ret);
 
+// SKT API Dependency Secntion ---------------- Start
 #ifdef DEBUG_LEVEL_3
 	printf("%s: Modem ID Configuration\n", getTimeInString(TIME_MODE_YMDHMS));
 #endif
-	ret = device_getnumber(modem_ID);
+	ret = device_getnumber(modem_ID);	// SKT API - get device phone #
 	if(ret == 1) {
 #ifdef DEBUG_LEVEL_2
 		printf("%s: Modem ID(Phone #) Value: %s\n", getTimeInString(TIME_MODE_YMDHMS), modem_ID);
@@ -131,6 +132,7 @@ int setConfiguration()
 	}
 	else
 		return checkEventFlag(ERR_MODEM_NUM_GET);
+// SKT API Dependency Secntion ---------------- End
 
 #ifdef DEBUG_LEVEL_3
 	printf("%s: Sensor ID Configuration\n", getTimeInString(TIME_MODE_YMDHMS));
@@ -194,18 +196,20 @@ int connectPPP(int defaultTime)
 	printf("%s: Default Waiting Time is %dsec\n", getTimeInString(TIME_MODE_YMDHMS), defaultTime);
 #endif
 
-	if( mnet_pppopen(defaultTime) < 1 ){
+// SKT API Dependency Secntion ---------------- Start
+	if( mnet_pppopen(defaultTime) < 1 ){	// SKT API
 #ifdef DEBUG_LEVEL_3
 		printf("%s: Connecting to the PPP... [Fail]: First Try\n", getTimeInString(TIME_MODE_YMDHMS));
 #endif
 		defaultTime *= 2;
-		if( mnet_pppopen(defaultTime) < 1 ){
+		if( mnet_pppopen(defaultTime) < 1 ){	// SKT API
 #ifdef DEBUG_LEVEL_3
 			printf("%s: Connecting to the PPP... [Fail]: Second Try\n", getTimeInString(TIME_MODE_YMDHMS));
 #endif
 			return checkEventFlag(ERR_CONNECT_PPP);
 		}
 	}
+// SKT API Dependency Secntion ---------------- End
 
 
 #ifdef DEBUG_LEVEL_1
