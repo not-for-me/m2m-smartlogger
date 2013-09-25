@@ -10,11 +10,13 @@ int pollSMSCommand()
 	printf("%s: [pollSMSCommand] Start\n", getTimeInString(TIME_MODE_YMDHMS));
 #endif
 
-	ret = sms_recv_msg_count(&recv_cnt, &unread_cnt);
+// SKT API Dependency Section ---------------- Start
+ 	ret = sms_recv_msg_count(&recv_cnt, &unread_cnt);
 	if(ret != 1) {
 		//Error Handling
 		return ERR_SMS_POLLING;
 	}
+// SKT API Dependency Section ---------------- Start
 
 #ifdef DEBUG_LEVEL_3
 	printf("%s: number of recv msg is %d, number of unread msg is %d\n", getTimeInString(TIME_MODE_YMDHMS), recv_cnt, unread_cnt);
@@ -38,6 +40,7 @@ int doSMSCommand()
 	printf("%s: [doSMSCommand] Start\n", getTimeInString(TIME_MODE_YMDHMS));
 #endif
 
+// SKT API Dependency Section ---------------- Start
 	ret = sms_recv_msg_count(&recv_cnt, &unread_cnt);
 	if(ret != 1) {
 		//Error Handling
@@ -50,6 +53,8 @@ int doSMSCommand()
 		sms_read_msg(i-1, &smsmsg);
 		strcpy(adminNumBuf, smsmsg.source_num);
 		strcpy(msgbuf,smsmsg.messages);
+// SKT API Dependency Section ---------------- End
+
 #ifdef DEBUG_LEVEL_3
 		printf("%s: SMS Message is \"%s\"\n", getTimeInString(TIME_MODE_YMDHMS), msgbuf);
 #endif
@@ -104,7 +109,7 @@ void parseSMSCommand(char *str, sms_cmd *parsedResult)
 
 	ptr = strtok(str, " ");
 	ptr = strtok(NULL, " ");
-	ptr = strtok(NULL, " ");	// ptr has value
+	ptr = strtok(NULL, " ");	// ptr has the value of SMS Command
 	strcpy(parsedResult->value, ptr);
 
 #ifdef DEBUG_LEVEL_3
@@ -115,6 +120,7 @@ void parseSMSCommand(char *str, sms_cmd *parsedResult)
 	printf("%s: [parseSMSCommand] Stop\n", getTimeInString(TIME_MODE_YMDHMS));
 #endif
 }
+
 
 void processSMSCommand(sms_cmd *parsedResult)
 {
