@@ -6,7 +6,8 @@ int checkConnection()
 	printf("%s: [checkConnection] Start\n", getTimeInString(TIME_MODE_YMDHMS));
 #endif
 
-	if( mnet_getstate() < 1 )
+// SKT API Dependency Section ---------------- Start
+	if( mnet_getstate() < 1 )	// SKT API
 		return checkEventFlag(ERR_PPP_DISCONNECT);
 	else {
 #ifdef DEBUG_LEVEL_3
@@ -14,6 +15,7 @@ int checkConnection()
 #endif
 		return PPP_CONNECTION_CHK_DONE;
 	}
+// SKT API Dependency Section ---------------- End
 }
 
 int tcpConnection(int *sock)
@@ -222,6 +224,7 @@ void *thread_transferring(void * arg)
 		writeDebugLog(debugLog);
 		puts(debugLog);
 #endif
+		// SKT API Dependency Section ---------------- Start
 		if(delay == DELAY_FLAG_OFF ) {
 			ret = checkConnection();
 
@@ -234,6 +237,7 @@ void *thread_transferring(void * arg)
 				}
 			}
 		}
+		// SKT API Dependency Section ---------------- End
 
 		// Connect to the Server with Socket
 #ifdef DEBUG_LEVEL_3
