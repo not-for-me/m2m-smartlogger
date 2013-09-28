@@ -371,7 +371,7 @@ int registerModem()
 	printf("%s: makeMessage Start\n", getTimeInString(TIME_MODE_YMDHMS));
 #endif
 	headerData.msgType = MSG_TYPE_REGISTER;
-	headerData.data_len = s(msg);		// s function ?
+	headerData.data_len = getTotalDataLength(msg);
 	headerData.msg_num = 1;
 	headerData.msg_len = getMSGLength(msg);
 	makeHeaderInfo(&headerData);

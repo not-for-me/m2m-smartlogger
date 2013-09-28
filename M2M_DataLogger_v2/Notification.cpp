@@ -268,13 +268,16 @@ void *thread_notification(void * arg)
 					checkEventFlag(ERR_REGISTER_MODEM);
 			}
 		}
-
+// SKT API Dependency Section ---------------- Start
 		ret = pollSMSCommand();			// ret variable means recived msg #
 #ifdef DEBUG_LEVEL_2
 		printf("%s: [pollSMSCommand] Return Value: %d\n", getTimeInString(TIME_MODE_YMDHMS), ret);
 #endif
 		if(ret > 0) {
 			ret = doSMSCommand();
+// SKT API Dependency Section ---------------- End
+
+
 #ifdef DEBUG_LEVEL_2
 			printf("%s: [doSMSCommand] Return Value: %d\n", getTimeInString(TIME_MODE_YMDHMS), ret);
 #endif
