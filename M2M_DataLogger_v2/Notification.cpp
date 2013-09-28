@@ -1,4 +1,7 @@
 #include "./Header/Notification.h"
+/*
+There is no dependency
+*/
 
 char notificationString[NOTIFICATION_SIZE][LOG_SIZE] = {
 		"000-[Unknown Error]",
@@ -134,11 +137,11 @@ int checkEventFlag(int eventNo)
 #endif
 
 	sprintf(errorLog, "%s: ", getTimeInString(TIME_MODE_YMDHMS));
-	strcat(errorLog, notificationString[eventNo-4000]);
+	strcat(errorLog, notificationString[eventNo-ERR_NUMBER_OFFSET]);
 	writeErrorLog(errorLog);
 
-	if(notificationFlag[eventNo-4000] == FALSE)
-		notificationFlag[eventNo-4000] = TRUE;
+	if(notificationFlag[eventNo-ERR_NUMBER_OFFSET] == FALSE)
+		notificationFlag[eventNo-ERR_NUMBER_OFFSET] = TRUE;
 
 #ifdef DEBUG_LEVEL_1
 	sprintf(logBuffer, "%s: [checkEventFlag] Stop\n", getTimeInString(TIME_MODE_YMDHMS));

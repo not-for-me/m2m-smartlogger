@@ -1,5 +1,6 @@
 #include "./Header/Sampling.h"
-
+// Sensor Dependency Section ---------------- Start
+// Modem Dependency Section ---------------- Start
 int connectToSensor()
 {
 	int fd = 0;
@@ -33,7 +34,10 @@ int connectToSensor()
 #endif
 	return fd;
 }
+// Modem Dependency Section ---------------- End
+// Sensor Dependency Section ---------------- Start
 
+// Sensor Dependency Section ---------------- Start
 int checkDataIntegrity(char *str, int *column, int *code)
 {
 	int i = 0;
@@ -89,7 +93,9 @@ int checkDataIntegrity(char *str, int *column, int *code)
 #endif
 	return DATA_INTEGRITY_CHK_DONE;
 }
+// Sensor Dependency Section ---------------- End
 
+// Sensor Dependency Section ---------------- Start
 int analyzeSpecialChar(int errorType, int column, int code)
 {
 	if(errorType == ERR_DATA_INTEGRITY_TYPE1) {
@@ -280,7 +286,9 @@ int analyzeSpecialChar(int errorType, int column, int code)
 
 	return ERR_ANALYZE_FAIL;
 }
+// Sensor Dependency Section ---------------- End
 
+// Sensor Dependency Section ---------------- Start
 int parsingRawData(char *buf, lake_data *sampling_data)
 {
 	int i = 0;
@@ -341,7 +349,9 @@ int parsingRawData(char *buf, lake_data *sampling_data)
 #endif
 	return ERR_INSUFFICIENT_DATA;
 }
+// Sensor Dependency Section ---------------- End
 
+// Sensor Dependency Section ---------------- Start
 int checkDataRange(lake_data *data)
 {
 	char logBuffer[LOG_SIZE] = "";
@@ -374,6 +384,7 @@ int checkDataRange(lake_data *data)
 #endif
 	return DATA_RANGE_CHK_DONE;
 }
+// Sensor Dependency Section ---------------- End
 
 
 int samplingData(lake_data *data, char *timeStamp)
@@ -407,6 +418,7 @@ int samplingData(lake_data *data, char *timeStamp)
 			writeDebugLog(logBuffer);
 			puts(logBuffer);
 #endif
+	// Sensor Dependency Section ---------------- Start
 			cnt = read(fd, buf, MSG_SIZE);
 			if(cnt == -1) {
 				snsr_state++;
@@ -420,6 +432,7 @@ int samplingData(lake_data *data, char *timeStamp)
 				break;
 			}
 		}
+	// Sensor Dependency Section ---------------- End
 
 #ifdef DEBUG_LEVEL_2
 		sprintf(logBuffer, "%s: Sampling Data String is \"%s\"\n", getTimeInString(TIME_MODE_YMDHMS), buf);
@@ -543,9 +556,10 @@ void *thread_sampling(void * arg)
 #endif
 
 		if(ret == SENSOR_SAMPLE_DONE) {
+		// Sensor Dependency Section ---------------- Start
 			sprintf(conversion_msg, "%s,%s,%.2f,%.2f,%.2f,%.3f,%.2f,%.2f,%.1f,%.1f", data.currentDate, timeStamp, data.temp,
 					data.spCond, data.sal, data.depth10, data.chl, data.ldo, data.ivolt, data.ovolt);
-
+		// Sensor Dependency Section ---------------- End
 			if(!isFullSamplingQueue(&sqinfo)) {
 				pthread_mutex_lock(&mutex);
 				ret = enqueueSamplingData(&sqinfo, conversion_msg);
